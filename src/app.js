@@ -5,11 +5,11 @@ import "./style.css";
 import "./assets/img/rigo-baby.jpg";
 import "./assets/img/4geeks.ico";
 
-const card = {
-  heart: ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
-  spades: ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
-  clover: ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
-  diamond: ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
+const CARDS = {
+  "♥": ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
+  "♠": ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
+  "♣": ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
+  "♦": ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
 };
 
 const getRandomItem = (array) => {
@@ -20,27 +20,39 @@ const getRandomNumber = (array) => {
 };
 
 const getRandomCard = () => {
+  const card = { ...CARDS };
   let randomKey = getRandomItem(Object.keys(card));
-  let randomCard = card[randomKey][getRandomNumber(card[randomKey])];
+  let indexCard = getRandomNumber(card[randomKey]);
+  let randomCard = card[randomKey][indexCard];
 
   const divCard = document.querySelector("#randomCard");
 
-  divCard.style.display = "block";
+  divCard.style.background = "white";
 
-  randomKey === "heart" || randomKey === "diamond"
+  if (card[randomKey].length === 0) {
+    delete card[randomKey];
+    randomKey = getRandomItem(Object.keys(card));
+    indexCard = getRandomNumber(card[randomKey]);
+    randomCard = card[randomKey][indexCard];
+  }
+
+  randomKey === "♥" || randomKey === "♦"
     ? (divCard.style.color = "darkred")
     : (divCard.style.color = "black");
 
-  let icon = "fa-heart";
-  if (randomKey === "diamond") icon = "fa-diamond";
-  if (randomKey === "clover") icon = "fa-clover";
-  if (randomKey === "spades") icon = "fa-spa";
+  let icon = "♥";
+  if (randomKey === "♦") icon = "♦";
+  if (randomKey === "♣") icon = "♣";
+  if (randomKey === "♠") icon = "♠";
 
   divCard.innerHTML = `
-    <span><i class="fa-solid ${icon}"></i></span>
+    <span class="col-12"><i>${icon}</i></span>
     <p class="cardNumber">${randomCard}</p>
-    <span class="d-flex"><i class="fa-solid ${icon} ms-auto"></i></span>
+    <span class="col-12 d-flex"><i class="ms-auto">${icon}</i></span>
     `;
+
+  console.log(`${randomKey} : ${randomCard} // ${card[randomKey]}`);
+  card[randomKey].splice(indexCard, 1);
 };
 
 document
