@@ -5,6 +5,8 @@ import "./style.css";
 import "./assets/img/rigo-baby.jpg";
 import "./assets/img/4geeks.ico";
 
+const divCard = document.querySelector("#randomCard");
+
 const cards = {
   "♥": ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
   "♠": ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"],
@@ -20,15 +22,23 @@ const getRandomNumber = array => {
 };
 
 const getRandomCard = () => {
-  const divCard = document.querySelector("#randomCard");
-  divCard.style.background = "white";
+  const span = document.createElement("span");
+  const paragraph = document.createElement("p");
+  const invertedSpan = document.createElement("span");
+
+  span.className = "col-12";
+  paragraph.className = "cardNumber";
+  invertedSpan.className = "col-12";
+  invertedSpan.style.transform = "rotate(180deg)";
+
+  while (divCard.hasChildNodes()) {
+    divCard.removeChild(divCard.firstChild);
+  }
 
   if (Object.keys(cards).length === 0) {
-    divCard.innerHTML = `
-    <span class="col-12">Out of Cards</span>
-    <p class="cardNumber">🤡</p>
-    <span class="col-12 text-end">Out of Cards</span>
-    `;
+    span.textContent = "Out of Cards";
+    paragraph.textContent = "🤡";
+    invertedSpan.textContent = "Out of Cards";
   }
 
   if (Object.keys(cards).length > 0) {
@@ -37,24 +47,22 @@ const getRandomCard = () => {
     let randomCard = cards[randomKey][indexCard];
 
     randomKey === "♥" || randomKey === "♦"
-      ? (divCard.style.color = "darkred")
-      : (divCard.style.color = "black");
+      ? (divCard.className = "card col-sm-5 col-10 red")
+      : (divCard.className = "card col-sm-5 col-10 black");
 
     let icon = "♥";
     if (randomKey === "♦") icon = "♦";
     if (randomKey === "♣") icon = "♣";
     if (randomKey === "♠") icon = "♠";
 
-    divCard.innerHTML = `
-      <span class="col-12"><i>${icon}</i></span>
-      <p class="cardNumber">${randomCard}</p>
-      <span class="col-12 d-flex"><i class="ms-auto">${icon}</i></span>
-      `;
+    span.textContent = `${icon}`;
+    paragraph.textContent = `${randomCard}`;
+    invertedSpan.textContent = `${icon}`;
 
     cards[randomKey].splice(indexCard, 1);
-
     if (cards[randomKey].length === 0) delete cards[randomKey];
   }
+  divCard.append(span, paragraph, invertedSpan);
 };
 
 const getDeckOfCards = () => {
